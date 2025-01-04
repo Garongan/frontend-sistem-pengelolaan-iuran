@@ -1,4 +1,4 @@
-import Error404 from '@/components/ui/error404';
+import { Error404, Error500 } from '@/components/ui/error-pages';
 import Login from '@/pages/auth/Login';
 import DashboardLayout from '@/pages/dashboard/DashboardLayout';
 import BillsForm from '@/pages/dashboard/bills/BillsForm';
@@ -12,8 +12,8 @@ import MenuForm from '@/pages/dashboard/menu/MenuForm';
 import MenuIndex from '@/pages/dashboard/menu/MenuIndex';
 import MenuLayout from '@/pages/dashboard/menu/MenuLayout';
 import {
-    default as ResidentForm,
-    default as TableForm,
+  default as ResidentForm,
+  default as TableForm,
 } from '@/pages/dashboard/resident/ResidentForm';
 import ResidentIndex from '@/pages/dashboard/resident/ResidentIndex';
 import ResidentLayout from '@/pages/dashboard/resident/ResidentLayout';
@@ -48,6 +48,7 @@ const Routes = createBrowserRouter([
       {
         path: 'resident',
         element: <ResidentLayout />,
+        // errorElement: <Error500 />,
         children: [
           {
             index: true,
@@ -66,6 +67,7 @@ const Routes = createBrowserRouter([
       {
         path: 'menu',
         element: <MenuLayout />,
+        errorElement: <Error500 />,
         children: [
           {
             index: true,
@@ -84,6 +86,7 @@ const Routes = createBrowserRouter([
       {
         path: 'customers',
         element: <CustomersLayout />,
+        errorElement: <Error500 />,
         children: [
           {
             index: true,
@@ -102,6 +105,7 @@ const Routes = createBrowserRouter([
       {
         path: 'bills',
         element: <BillsLayout />,
+        errorElement: <Error500 />,
         children: [
           {
             index: true,

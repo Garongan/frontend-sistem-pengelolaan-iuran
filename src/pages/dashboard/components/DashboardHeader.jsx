@@ -24,7 +24,7 @@ const DashboardHeader = () => {
   return (
     <>
       <div className='border-b'>
-        <div className='flex h-16 items-center'>
+        <div className='flex h-16 items-center overflow-scroll'>
           <nav className='flex items-start space-x-4 lg:space-x-6'>
             {nav.map((item, index) => (
               <Link
@@ -36,7 +36,7 @@ const DashboardHeader = () => {
               </Link>
             ))}
           </nav>
-          <div className='ml-auto flex items-center space-x-4'>
+          <div className='flex items-center space-x-4 md:ml-auto ms-4'>
             <Profile />
           </div>
         </div>

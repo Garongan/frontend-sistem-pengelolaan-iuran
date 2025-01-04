@@ -8,9 +8,9 @@ import {
 } from "@/components/ui/table";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { priceFormat } from "@/shared/usePriceFormat";
 import PropTypes from "prop-types";
 import ActionList from "../components/ActionList";
-import { priceFormat } from "@/shared/usePriceFormat";
 
 const MenuList = ({ data, deleteItem }) => {
     return (

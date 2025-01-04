@@ -55,8 +55,8 @@ const DataList = ({ title }) => {
 
   return (
     <>
-      <div className='flex items-center justify-between space-y-2'>
-        <h2 className='text-3xl font-bold tracking-tight pb-4'>{title}</h2>
+      <div className='flex md:flex-row flex-col md:items-center items-start justify-between space-y-2'>
+        <h2 className='lg:text-3xl md:text-xl text-lg font-bold tracking-tight pb-4'>{title}</h2>
         <Link to='/dashboard/resident/new' className='pb-4'>
           <Button className='mb-4'>Tambah Penghuni</Button>
         </Link>

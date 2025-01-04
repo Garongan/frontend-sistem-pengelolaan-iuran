@@ -34,7 +34,7 @@ const Action = ({ deleteItem, id, fromWhat }) => {
     };
 
     return (
-        <div className="space-x-4">
+        <div className="min-w-48 grid grid-cols-2 gap-4">
             <Button variant="outline" onClick={handleUpdate}>
                 <FilePenLine className="mr-2 h-4 w-4" /> Edit
             </Button>

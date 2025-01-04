@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import useMenuService from "@/services/useMenuService";
 import LoaderList from "@/shared/LoaderList";
+import PageSize from "@/shared/PageSize";
 import PaginationComponent from "@/shared/PaginationComponent";
+import PriceFilter from "@/shared/PriceFilter";
 import {
     QueryClient,
     QueryClientProvider,
@@ -11,16 +15,12 @@ import {
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
+import { Search } from "lucide-react";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { Link, useSearchParams } from "react-router-dom";
 import MenuList from "./MenuList";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
-import { useForm } from "react-hook-form";
-import PageSize from "@/shared/PageSize";
-import PriceFilter from "@/shared/PriceFilter";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const queryClient = new QueryClient();
 

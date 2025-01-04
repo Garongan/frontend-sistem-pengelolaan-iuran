@@ -12,7 +12,6 @@ const useResidentService = () => {
         'Content-Type': 'multipart/form-data',
       },
     });
-    console.log(data)
     return data;
   };
 
@@ -31,12 +30,18 @@ const useResidentService = () => {
     return data;
   };
 
+  const getImage = async (url) => {
+    const { data } = await axiosInstance.get(`/images/${url}`);
+    return data;
+  };
+
   return {
     getAll,
     create,
     deleteById,
     updateById,
     getById,
+    getImage,
   };
 };
 

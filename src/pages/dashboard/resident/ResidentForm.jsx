@@ -105,9 +105,10 @@ const ResidentForm = ({ title }) => {
         'data',
         JSON.stringify({
           fullname: data.fullname,
-          is_permanent_resident: data.is_permanent_resident,
+          is_permanent_resident:
+            data.is_permanent_resident === 'Kontrak' ? false : true,
           phone_number: data.phone_number,
-          is_married: data.is_married,
+          is_married: data.is_married === 'Belum Menikah' ? false : true,
         })
       );
       formdata.append('identity_card_image', data.identity_card_image[0]);
