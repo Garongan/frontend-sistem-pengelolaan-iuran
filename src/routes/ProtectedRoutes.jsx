@@ -1,37 +1,25 @@
-import useAuthService from "@/services/useAuthService";
-import PropTypes from "prop-types";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ProtectedRoutes = ({ children, path }) => {
-    const authService = useAuthService();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const checkToken = async () => {
-            if (
-                !localStorage.getItem("user") ||
-                !(await authService.validateToken())
-            ) {
-                navigate("/login");
-            } else if (
-                path === "register/admin" &&
-                JSON.parse(localStorage.getItem("user")).roles.includes(
-                    "ROLE_SUPER_ADMIN"
-                )
-            ) {
-                navigate("/register/admin");
-            }
-        };
-        checkToken();
-    }, [navigate, path]);
+  useEffect(() => {
+    const checkToken = async () => {
+      if (!localStorage.getItem('user')) {
+        navigate('/');
+      }
+    };
+    checkToken();
+  }, [navigate, path]);
 
-    return <>{children}</>;
+  return <>{children}</>;
 };
 
 ProtectedRoutes.propTypes = {
-    children: PropTypes.node,
-    path: PropTypes.string,
+  children: PropTypes.node,
+  path: PropTypes.string,
 };
 
 export default ProtectedRoutes;
