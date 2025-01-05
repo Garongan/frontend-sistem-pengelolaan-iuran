@@ -19,16 +19,18 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
-import useResidentService from '@/services/useResidentService';
+import useResident from '@/hooks/use-resident';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const ResidentForm = ({ title, isEditMode }) => {
-  const { create, getById, updateById } = useResidentService();
+  const { create, getById, updateById } = useResident();
   const [preview, setPreview] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -102,6 +104,7 @@ const ResidentForm = ({ title, isEditMode }) => {
   const onSubmit = async (data) => {
     const formdata = new FormData();
     const id = form.getValues('id');
+    setIsLoading(true);
     if (id) {
       try {
         formdata.append(
@@ -123,6 +126,7 @@ const ResidentForm = ({ title, isEditMode }) => {
 
         const response = await updateById(id, formdata);
         if (response && response.statusCode === 200) {
+          setIsLoading(false);
           navigate('/dashboard/resident');
         }
       } catch (error) {
@@ -147,6 +151,7 @@ const ResidentForm = ({ title, isEditMode }) => {
       try {
         const response = await create(formdata);
         if (response && response.statusCode === 201) {
+          setIsLoading(false);
           navigate('/dashboard/resident');
         }
       } catch (error) {
@@ -286,6 +291,7 @@ const ResidentForm = ({ title, isEditMode }) => {
                 <FormLabel>Gambar KTP</FormLabel>
                 <FormControl>
                   <Input
+                    className='cursor-pointer'
                     type='file'
                     accept='image/png, image/jpeg'
                     {...rest}
@@ -305,7 +311,7 @@ const ResidentForm = ({ title, isEditMode }) => {
             )}
           />
           <Button disabled={!form.formState.isValid} type='submit'>
-            Submit
+            {isLoading ? <Loader2 className='animate-spin' /> : 'Submit'}
           </Button>
         </form>
       </Form>

@@ -1,6 +1,5 @@
 import { ToastAction } from '@/components/ui/toast';
 import { useToast } from '@/components/ui/use-toast';
-import useAuthService from '@/services/useAuthService';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,6 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import useAuth from '@/hooks/use-auth';
 import { Home, Loader2 } from 'lucide-react';
 
 const schema = z.object({
@@ -29,7 +29,7 @@ const schema = z.object({
 });
 
 const Login = () => {
-  const service = useAuthService();
+  const service = useAuth();
   const navigate = useNavigate();
   const [failLogin, setFailLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

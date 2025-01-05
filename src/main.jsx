@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { Toaster } from "./components/ui/toaster";
 import "./index.css";
-import Routes from "./routes/Routes";
+import Routes from "./routes/routes";
 
 const queryClient = new QueryClient();
 

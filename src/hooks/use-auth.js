@@ -1,6 +1,6 @@
-import axiosInstance from '@/api/axiosInstance';
+import axiosInstance from '@/api/axios-instance';
 
-const useAuthService = () => {
+const useAuth = () => {
   const login = async (payload) => {
     const { data } = await axiosInstance.post('/auth/login', payload);
     return data;
@@ -19,4 +19,4 @@ const useAuthService = () => {
   };
 };
 
-export default useAuthService;
+export default useAuth;

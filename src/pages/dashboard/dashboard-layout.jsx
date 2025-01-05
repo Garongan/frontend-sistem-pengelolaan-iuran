@@ -10,7 +10,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import useAuthService from '@/services/useAuthService';
+import useAuthService from '@/hooks/use-auth';
 import {
   CircleUser,
   CreditCard,
@@ -18,7 +18,7 @@ import {
   LayoutDashboard,
   Loader2,
   LogOut,
-  Users
+  Users,
 } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -50,7 +50,7 @@ const AppSideBar = () => {
     },
     {
       title: 'Rumah',
-      url: '/dashboard/home',
+      url: '/dashboard/house',
       icon: Home,
     },
     {
@@ -69,7 +69,7 @@ const AppSideBar = () => {
         </div>
       </SidebarHeader>
       <SidebarGroup>
-        <SidebarGroupLabel>SIPI Dashboard</SidebarGroupLabel>
+        <SidebarGroupLabel>Dashboard Menu</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map((item) => (

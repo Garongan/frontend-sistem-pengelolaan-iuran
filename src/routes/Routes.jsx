@@ -1,24 +1,24 @@
 import { Error404, Error500 } from '@/components/ui/error-pages';
-import Login from '@/pages/auth/Login';
-import DashboardLayout from '@/pages/dashboard/DashboardLayout';
+import Login from '@/pages/auth/login';
 import BillsForm from '@/pages/dashboard/bills/BillsForm';
 import BillsIndex from '@/pages/dashboard/bills/BillsIndex';
 import BillsLayout from '@/pages/dashboard/bills/BillsLayout';
 import CustomersForm from '@/pages/dashboard/customers/CustomersForm';
 import CustomersIndex from '@/pages/dashboard/customers/CustomersIndex';
 import CustomersLayout from '@/pages/dashboard/customers/CustomersLayout';
-import Dashboard from '@/pages/dashboard/dashboard/Dashboard';
-import MenuForm from '@/pages/dashboard/menu/MenuForm';
-import MenuIndex from '@/pages/dashboard/menu/MenuIndex';
-import MenuLayout from '@/pages/dashboard/menu/MenuLayout';
+import DashboardLayout from '@/pages/dashboard/dashboard-layout';
+import Dashboard from '@/pages/dashboard/dashboard/dashboard';
+import HouseForm from '@/pages/dashboard/house/house-form';
+import HouseIndex from '@/pages/dashboard/house/house-index';
+import HouseLayout from '@/pages/dashboard/house/house-layout';
 import {
   default as ResidentForm,
   default as TableForm,
-} from '@/pages/dashboard/resident/ResidentForm';
-import ResidentIndex from '@/pages/dashboard/resident/ResidentIndex';
-import ResidentLayout from '@/pages/dashboard/resident/ResidentLayout';
+} from '@/pages/dashboard/resident/resident-form';
+import ResidentIndex from '@/pages/dashboard/resident/resident-index';
+import ResidentLayout from '@/pages/dashboard/resident/resident-layout';
 import { createBrowserRouter } from 'react-router-dom';
-import ProtectedRoutes from './ProtectedRoutes';
+import ProtectedRoutes from './protected-routes';
 
 const Routes = createBrowserRouter([
   {
@@ -48,7 +48,7 @@ const Routes = createBrowserRouter([
       {
         path: 'resident',
         element: <ResidentLayout />,
-        // errorElement: <Error500 />,
+        errorElement: <Error500 />,
         children: [
           {
             index: true,
@@ -69,21 +69,21 @@ const Routes = createBrowserRouter([
         ],
       },
       {
-        path: 'home',
-        element: <MenuLayout />,
+        path: 'house',
+        element: <HouseLayout />,
         errorElement: <Error500 />,
         children: [
           {
             index: true,
-            element: <MenuIndex title='Menu' />,
+            element: <HouseIndex title='Data Rumah' />,
           },
           {
             path: 'new',
-            element: <MenuForm title='Create Menu Form' />,
+            element: <HouseForm title='Formulir Rumah Baru' />,
           },
           {
             path: 'update/:id',
-            element: <MenuForm title='Update Menu Form' />,
+            element: <HouseForm title='Formulir Mengubah Rumah' />,
           },
         ],
       },

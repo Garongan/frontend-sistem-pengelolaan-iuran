@@ -1,6 +1,6 @@
-import axiosInstance from '@/api/axiosInstance';
+import axiosInstance from '@/api/axios-instance';
 
-const useResidentService = () => {
+const useResident = () => {
   const getAll = async () => {
     const { data } = await axiosInstance.get('/residents');
     return data;
@@ -28,7 +28,7 @@ const useResidentService = () => {
     });
     return data;
   };
-  
+
   const getById = async (id) => {
     const { data } = await axiosInstance.get(`/residents/${id}`);
     return data;
@@ -49,4 +49,4 @@ const useResidentService = () => {
   };
 };
 
-export default useResidentService;
+export default useResident;

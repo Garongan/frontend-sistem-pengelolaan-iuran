@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import useResidentService from '@/services/useResidentService';
-import LoaderList from '@/shared/LoaderList';
+import useResident from '@/hooks/use-resident';
+import LoaderList from '@/shared/loader-list';
 import {
   QueryClient,
   QueryClientProvider,
@@ -11,7 +11,7 @@ import {
 } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import ResidentList from './ResidentList';
+import ResidentList from './resident-list';
 
 const queryClient = new QueryClient();
 
@@ -25,7 +25,7 @@ const ResidentIndex = ({ title }) => {
 
 const DataList = ({ title }) => {
   const queryClient = useQueryClient();
-  const { getAll, deleteById } = useResidentService();
+  const { getAll, deleteById } = useResident();
 
   const handleGetAll = async () => {
     const response = await getAll();

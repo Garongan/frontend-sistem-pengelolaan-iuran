@@ -8,10 +8,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
-import useCustomersService from '@/hooks/useCustomersService';
+import useHouse from '@/hooks/use-house';
 import LoaderList from '@/shared/loader-list';
 import PageSize from '@/shared/page-size';
 import PaginationComponent from '@/shared/pagination-component';
+import PriceFilter from '@/shared/price-filter';
 import {
   QueryClient,
   QueryClientProvider,
@@ -25,10 +26,11 @@ import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useSearchParams } from 'react-router-dom';
-import CustomersList from './CustomersList';
+import HouseList from './house-list';
 
 const queryClient = new QueryClient();
-const CustomersIndex = ({ title }) => {
+
+const HouseIndex = ({ title }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <DataList title={title} />
@@ -38,9 +40,11 @@ const CustomersIndex = ({ title }) => {
 
 const DataList = ({ title }) => {
   const queryClient = useQueryClient();
-  const { getAll, deleteById } = useCustomersService();
+  const { getAll, deleteById } = useHouse();
   const [searchParams, setSearchParams] = useSearchParams();
   const name = searchParams.get('name') || '';
+  const minPrice = searchParams.get('minPrice') || '';
+  const maxPrice = searchParams.get('maxPrice') || '';
   const direction = searchParams.get('direction') || 'asc';
   const sortBy = searchParams.get('sortBy') || 'name';
   const page = searchParams.get('page') || 1;
@@ -60,18 +64,24 @@ const DataList = ({ title }) => {
     },
   });
 
+  const handleGetAll = async () => {
+    // const response = await getAll({
+    //   name: name,
+    //   minPrice: minPrice,
+    //   maxPrice: maxPrice,
+    //   direction: direction,
+    //   sortBy: sortBy,
+    //   page: page,
+    //   size: size,
+    // });
+    const response = await getAll();
+    return response.data;
+  };
+
   const onSubmitSearch = (data) => {
-    console.log(data);
     setSearchParams({
       ...searchParams,
       name: data.search,
-    });
-  };
-
-  const handleChangeDirection = (direction) => {
-    setSearchParams({
-      ...searchParams,
-      direction: direction,
     });
   };
 
@@ -82,17 +92,33 @@ const DataList = ({ title }) => {
     });
   };
 
+  const handleChangeDirection = (direction) => {
+    setSearchParams({
+      ...searchParams,
+      direction: direction,
+    });
+  };
+
+  const handlePriceFilter = (minPrice, maxPrice) => {
+    setSearchParams({
+      ...searchParams,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+    });
+  };
+
   const { data, isSuccess } = useQuery({
-    queryKey: ['customers', name, direction, sortBy, page, size],
-    queryFn: async () => {
-      return await getAll({
-        name: name,
-        direction: direction,
-        sortBy: sortBy,
-        page: page,
-        size: size,
-      });
-    },
+    queryKey: [
+      'houses',
+      name,
+      minPrice,
+      maxPrice,
+      direction,
+      sortBy,
+      page,
+      size,
+    ],
+    queryFn: handleGetAll,
     placeholderData: keepPreviousData,
     staleTime: 5000,
   });
@@ -100,7 +126,7 @@ const DataList = ({ title }) => {
   const deleteItem = useMutation({
     mutationFn: deleteById,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['customers'] });
+      queryClient.invalidateQueries({ queryKey: ['houses'] });
     },
     onError: (error) => {
       toast({
@@ -126,8 +152,8 @@ const DataList = ({ title }) => {
       </div>
       <div className='flex items-center mb-4 justify-between'>
         <div className='flex items-center gap-4'>
-          <Link to='/dashboard/customers/new'>
-            <Button>New Customer</Button>
+          <Link to='/dashboard/menu/new'>
+            <Button>New Menu</Button>
           </Link>
           <Select onValueChange={handleChangeDirection}>
             <SelectTrigger className='w-20'>
@@ -139,7 +165,9 @@ const DataList = ({ title }) => {
             </SelectContent>
           </Select>
         </div>
+
         <div className='flex items-center gap-4'>
+          <PriceFilter handlePriceFilter={handlePriceFilter} />
           <PageSize handleChangePageSize={handleChangePageSize} />
           <form
             className='flex max-w-sm items-center space-x-2'
@@ -158,7 +186,7 @@ const DataList = ({ title }) => {
           </form>
         </div>
       </div>
-      <CustomersList data={data?.data} deleteItem={deleteItem} />
+      <HouseList data={data?.data} deleteItem={deleteItem} />
       <PaginationComponent
         paging={paging}
         searchParams={searchParams}
@@ -168,7 +196,7 @@ const DataList = ({ title }) => {
   );
 };
 
-CustomersIndex.propTypes = {
+HouseIndex.propTypes = {
   title: PropTypes.string,
 };
 
@@ -176,4 +204,4 @@ DataList.propTypes = {
   title: PropTypes.string,
 };
 
-export default CustomersIndex;
+export default HouseIndex;
