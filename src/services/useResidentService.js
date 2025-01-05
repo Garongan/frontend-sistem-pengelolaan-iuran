@@ -21,10 +21,14 @@ const useResidentService = () => {
   };
 
   const updateById = async (id, payload) => {
-    const { data } = await axiosInstance.put(`/residents/${id}`, payload);
+    const { data } = await axiosInstance.post(`/residents/${id}`, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return data;
   };
-
+  
   const getById = async (id) => {
     const { data } = await axiosInstance.get(`/residents/${id}`);
     return data;

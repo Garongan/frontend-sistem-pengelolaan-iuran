@@ -26,37 +26,53 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
-const formSchema = z.object({
-  fullname: z
-    .string()
-    .min(1, { message: 'Nama lengkap wajib diisi' })
-    .max(100, { message: 'Nama lengkap maksimal 100 karakter' }),
-  is_permanent_resident: z.string({
-    required_error: 'Status penghuni tetap wajib diisi',
-  }),
-  phone_number: z
-    .string()
-    .regex(/^\d+$/, { message: 'Nomor telepon hanya boleh berisi angka' })
-    .min(10, { message: 'Nomor telepon minimal 10 digit' })
-    .max(15, { message: 'Nomor telepon maksimal 15 digit' }),
-  is_married: z.string({
-    required_error: 'Status pernikahan wajib diisi',
-  }),
-  identity_card_image: z
-    .any()
-    .refine((file) => file?.[0]?.size <= 2 * 1024 * 1024, {
-      message: 'Ukuran file KTP maksimal 2MB',
-    })
-    .refine((file) => ['image/jpeg', 'image/png'].includes(file?.[0]?.type), {
-      message: 'Gambar KTP harus berupa JPG atau PNG',
-    }),
-});
-
-const ResidentForm = ({ title }) => {
+const ResidentForm = ({ title, isEditMode }) => {
   const { create, getById, updateById } = useResidentService();
   const [preview, setPreview] = useState('');
   const navigate = useNavigate();
   const { id } = useParams();
+
+  const formSchema = z.object({
+    fullname: z
+      .string()
+      .min(1, { message: 'Nama lengkap wajib diisi' })
+      .max(100, { message: 'Nama lengkap maksimal 100 karakter' }),
+    is_permanent_resident: z.string({
+      required_error: 'Status penghuni tetap wajib diisi',
+    }),
+    phone_number: z
+      .string()
+      .regex(/^\d+$/, { message: 'Nomor telepon hanya boleh berisi angka' })
+      .min(10, { message: 'Nomor telepon minimal 10 digit' })
+      .max(15, { message: 'Nomor telepon maksimal 15 digit' }),
+    is_married: z.string({
+      required_error: 'Status pernikahan wajib diisi',
+    }),
+    identity_card_image: isEditMode
+      ? z
+          .any()
+          .refine((file) => file?.[0]?.size <= 2 * 1024 * 1024, {
+            message: 'Ukuran file KTP maksimal 2MB',
+          })
+          .refine(
+            (file) => ['image/jpeg', 'image/png'].includes(file?.[0]?.type),
+            {
+              message: 'Gambar KTP harus berupa JPG atau PNG',
+            }
+          )
+          .optional()
+      : z
+          .any()
+          .refine((file) => file?.[0]?.size <= 2 * 1024 * 1024, {
+            message: 'Ukuran file KTP maksimal 2MB',
+          })
+          .refine(
+            (file) => ['image/jpeg', 'image/png'].includes(file?.[0]?.type),
+            {
+              message: 'Gambar KTP harus berupa JPG atau PNG',
+            }
+          ),
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -88,8 +104,24 @@ const ResidentForm = ({ title }) => {
     const id = form.getValues('id');
     if (id) {
       try {
-        data = { id: id, name: data.name.toUpperCase() };
-        const response = await updateById(id, data);
+        formdata.append(
+          'data',
+          JSON.stringify({
+            fullname: data.fullname,
+            is_permanent_resident:
+              data.is_permanent_resident === 'Kontrak' ? false : true,
+            phone_number: data.phone_number,
+            is_married: data.is_married === 'Belum Menikah' ? false : true,
+          })
+        );
+
+        if (data.identity_card_image) {
+          formdata.append('identity_card_image', data.identity_card_image[0]);
+        }
+
+        formdata.append('_method', 'PUT');
+
+        const response = await updateById(id, formdata);
         if (response && response.statusCode === 200) {
           navigate('/dashboard/resident');
         }
@@ -131,14 +163,25 @@ const ResidentForm = ({ title }) => {
     const fetch = async () => {
       const data = await getById(id);
       form.setValue('id', data?.data.id);
-      form.setValue('name', data?.data.name);
+      form.setValue('fullname', data?.data.fullname);
+      form.setValue(
+        'is_permanent_resident',
+        data?.data.is_permanent_resident ? 'Tetap' : 'Kontrak'
+      );
+      form.setValue('phone_number', data?.data.phone_number);
+      form.setValue(
+        'is_married',
+        data?.data.is_married ? 'Sudah Menikah' : 'Belum Menikah'
+      );
+      setPreview(data?.data.indentity_card_url);
       form.trigger();
     };
     fetch();
-  }, [id, form.setValue, getById, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, form.setValue, form]);
 
   return (
-    <>
+    <div className='py-5'>
       <div className='flex items-center justify-between space-y-2'>
         <h2 className='text-3xl font-bold tracking-tight pb-4'>{title}</h2>
       </div>
@@ -171,6 +214,7 @@ const ResidentForm = ({ title }) => {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -212,6 +256,7 @@ const ResidentForm = ({ title }) => {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -259,15 +304,18 @@ const ResidentForm = ({ title }) => {
               </FormItem>
             )}
           />
-          <Button type='submit'>Submit</Button>
+          <Button disabled={!form.formState.isValid} type='submit'>
+            Submit
+          </Button>
         </form>
       </Form>
-    </>
+    </div>
   );
 };
 
 ResidentForm.propTypes = {
   title: PropTypes.string,
+  isEditMode: PropTypes.bool,
 };
 
 export default ResidentForm;

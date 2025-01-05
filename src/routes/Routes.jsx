@@ -56,16 +56,20 @@ const Routes = createBrowserRouter([
           },
           {
             path: 'new',
-            element: <ResidentForm title='Create Table Form' />,
+            element: (
+              <ResidentForm title='Formulir Penghuni Baru' isEditMode={false} />
+            ),
           },
           {
             path: 'update/:id',
-            element: <TableForm title='Updata Table Form' />,
+            element: (
+              <TableForm title='Formulir Mengubah Penghuni' isEditMode={true} />
+            ),
           },
         ],
       },
       {
-        path: 'menu',
+        path: 'home',
         element: <MenuLayout />,
         errorElement: <Error500 />,
         children: [
@@ -84,7 +88,7 @@ const Routes = createBrowserRouter([
         ],
       },
       {
-        path: 'customers',
+        path: 'payment',
         element: <CustomersLayout />,
         errorElement: <Error500 />,
         children: [

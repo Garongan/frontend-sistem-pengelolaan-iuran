@@ -56,12 +56,16 @@ const DataList = ({ title }) => {
   return (
     <>
       <div className='flex md:flex-row flex-col md:items-center items-start justify-between space-y-2'>
-        <h2 className='lg:text-3xl md:text-xl text-lg font-bold tracking-tight pb-4'>{title}</h2>
+        <h2 className='lg:text-3xl md:text-xl text-lg font-bold tracking-tight pb-4'>
+          {title}
+        </h2>
         <Link to='/dashboard/resident/new' className='pb-4'>
           <Button className='mb-4'>Tambah Penghuni</Button>
         </Link>
       </div>
-      <ResidentList data={data?.data} deleteItem={deleteItem} />
+      <div className='rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50'>
+        <ResidentList data={data?.data} deleteItem={deleteItem} />
+      </div>
     </>
   );
 };

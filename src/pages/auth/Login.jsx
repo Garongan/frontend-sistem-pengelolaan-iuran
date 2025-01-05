@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Home } from 'lucide-react';
+import { Home, Loader2 } from 'lucide-react';
 
 const schema = z.object({
   email: z.string().email().min(4, {
@@ -32,6 +32,7 @@ const Login = () => {
   const service = useAuthService();
   const navigate = useNavigate();
   const [failLogin, setFailLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const form = useForm({
@@ -44,10 +45,12 @@ const Login = () => {
   });
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
       const response = await service.login(data);
       if (response && response.statusCode === 200) {
         setFailLogin(false);
+        setIsLoading(false);
         localStorage.setItem('user', JSON.stringify(response.data));
         navigate('/dashboard');
       }
@@ -147,7 +150,11 @@ const Login = () => {
                         className='w-full my-2'
                         disabled={!form.formState.isValid}
                       >
-                        Submit
+                        {isLoading ? (
+                          <Loader2 className='animate-spin' />
+                        ) : (
+                          'Submit'
+                        )}
                       </Button>
                     </form>
                   </Form>
