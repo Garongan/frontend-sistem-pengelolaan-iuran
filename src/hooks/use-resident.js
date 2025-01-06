@@ -1,8 +1,8 @@
 import axiosInstance from '@/api/axios-instance';
 
 const useResident = () => {
-  const getAll = async () => {
-    const { data } = await axiosInstance.get('/residents');
+  const getAll = async (query) => {
+    const { data } = await axiosInstance.get('/residents', { params: query });
     return data;
   };
 
@@ -34,18 +34,12 @@ const useResident = () => {
     return data;
   };
 
-  const getImage = async (url) => {
-    const { data } = await axiosInstance.get(`/images/${url}`);
-    return data;
-  };
-
   return {
     getAll,
     create,
     deleteById,
     updateById,
     getById,
-    getImage,
   };
 };
 

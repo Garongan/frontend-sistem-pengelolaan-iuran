@@ -1,18 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
 import useHouse from '@/hooks/use-house';
 import LoaderList from '@/shared/loader-list';
 import PageSize from '@/shared/page-size';
 import PaginationComponent from '@/shared/pagination-component';
-import PriceFilter from '@/shared/price-filter';
 import {
   QueryClient,
   QueryClientProvider,
@@ -21,7 +13,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -42,13 +34,9 @@ const DataList = ({ title }) => {
   const queryClient = useQueryClient();
   const { getAll, deleteById } = useHouse();
   const [searchParams, setSearchParams] = useSearchParams();
-  const name = searchParams.get('name') || '';
-  const minPrice = searchParams.get('minPrice') || '';
-  const maxPrice = searchParams.get('maxPrice') || '';
-  const direction = searchParams.get('direction') || 'asc';
-  const sortBy = searchParams.get('sortBy') || 'name';
+  const houseCode = searchParams.get('houseCode') || '';
   const page = searchParams.get('page') || 1;
-  const size = searchParams.get('size') || 10;
+  const size = searchParams.get('size') || 8;
   const [paging, setPaging] = useState({
     totalPages: 0,
     totalElement: 1,
@@ -64,17 +52,18 @@ const DataList = ({ title }) => {
     },
   });
 
+  const handleDeleteSearchName = () => {
+    searchParams.delete('houseCode');
+    setSearchParams(searchParams);
+  };
+
+
   const handleGetAll = async () => {
-    // const response = await getAll({
-    //   name: name,
-    //   minPrice: minPrice,
-    //   maxPrice: maxPrice,
-    //   direction: direction,
-    //   sortBy: sortBy,
-    //   page: page,
-    //   size: size,
-    // });
-    const response = await getAll();
+    const response = await getAll({
+      name: name,
+      page: page,
+      size: size,
+    });
     return response.data;
   };
 
@@ -92,32 +81,8 @@ const DataList = ({ title }) => {
     });
   };
 
-  const handleChangeDirection = (direction) => {
-    setSearchParams({
-      ...searchParams,
-      direction: direction,
-    });
-  };
-
-  const handlePriceFilter = (minPrice, maxPrice) => {
-    setSearchParams({
-      ...searchParams,
-      minPrice: minPrice,
-      maxPrice: maxPrice,
-    });
-  };
-
   const { data, isSuccess } = useQuery({
-    queryKey: [
-      'houses',
-      name,
-      minPrice,
-      maxPrice,
-      direction,
-      sortBy,
-      page,
-      size,
-    ],
+    queryKey: ['houses', houseCode, page, size],
     queryFn: handleGetAll,
     placeholderData: keepPreviousData,
     staleTime: 5000,
@@ -139,60 +104,68 @@ const DataList = ({ title }) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setPaging(data?.paginationResponse);
+      setPaging({
+        totalPages: data.links.length - 2,
+        totalElement: data.total,
+        page: data.current_page,
+        size: data.per_page,
+        hasNext: data.links[2].active,
+        hasPrevious: data.links[0].active,
+      });
     }
   }, [data, isSuccess]);
 
   if (!isSuccess) return <LoaderList />;
 
   return (
-    <>
-      <div className='flex items-center justify-between space-y-2'>
-        <h2 className='text-3xl font-bold tracking-tight pb-4'>{title}</h2>
+    <div className='flex flex-col gap-5'>
+      <div className='flex items-center justify-between pt-2'>
+        <h2 className='text-3xl font-bold tracking-tight'>{title}</h2>
       </div>
-      <div className='flex items-center mb-4 justify-between'>
-        <div className='flex items-center gap-4'>
-          <Link to='/dashboard/menu/new'>
-            <Button>New Menu</Button>
-          </Link>
-          <Select onValueChange={handleChangeDirection}>
-            <SelectTrigger className='w-20'>
-              <SelectValue placeholder={direction} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value='asc'>asc</SelectItem>
-              <SelectItem value='desc'>desc</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <div className='flex items-center justify-between'>
+        <Link to='/dashboard/house/new'>
+          <Button>Tambah Rumah Baru</Button>
+        </Link>
 
-        <div className='flex items-center gap-4'>
-          <PriceFilter handlePriceFilter={handlePriceFilter} />
+        <div className='flex w-full max-w-sm space-x-2 items-center'>
           <PageSize handleChangePageSize={handleChangePageSize} />
           <form
-            className='flex max-w-sm items-center space-x-2'
+            className='flex w-full items-center space-x-2 max-w-sm'
             onSubmit={searchForm.handleSubmit(onSubmitSearch)}
           >
-            <Input
-              type='text'
-              name='search'
-              placeholder='Search By Name..'
-              {...searchForm.register('search')}
-              autoComplete='off'
-            />
+            <div className='relative w-full'>
+              <Input
+                type='text'
+                name='search'
+                placeholder='Cari Kode Rumah...'
+                {...searchForm.register('search')}
+                autoComplete='off'
+              />
+              <Button
+                type='button'
+                variant='ghost'
+                size='icon'
+                className='absolute right-1 top-1/2 -translate-y-1/2'
+                onClick={handleDeleteSearchName}
+              >
+                <X />
+              </Button>
+            </div>
             <Button type='submit'>
               <Search />
             </Button>
           </form>
         </div>
       </div>
-      <HouseList data={data?.data} deleteItem={deleteItem} />
+      <div className='rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50'>
+        <HouseList data={data?.data} deleteItem={deleteItem} />
+      </div>
       <PaginationComponent
         paging={paging}
         searchParams={searchParams}
         setSearchParams={setSearchParams}
       />
-    </>
+    </div>
   );
 };
 

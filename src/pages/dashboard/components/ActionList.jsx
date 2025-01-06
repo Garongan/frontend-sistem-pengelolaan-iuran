@@ -34,36 +34,38 @@ const Action = ({ deleteItem, id, fromWhat }) => {
     };
 
     return (
-        <div className="min-w-48 grid grid-cols-2 gap-4">
-            <Button variant="outline" onClick={handleUpdate}>
-                <FilePenLine className="mr-2 h-4 w-4" /> Edit
-            </Button>
-            <AlertDialog>
-                <AlertDialogTrigger className="bg-zinc-900 text-zinc-50 inline-flex items-center justify-center rounded-md h-10 px-4 py-2">
-                    <Trash2 className="h-4 w-4" />
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Apakah Anda Yakin Ingin Menghapus Data Ini?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Data yang sudah dihapus tidak dapat dikembalikan.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={() => {
-                                deleteItem.mutate(id);
-                            }}
-                        >
-                            Continue
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+      <div className="flex justify-end">
+        <div className='max-w-52 min-w-48 grid grid-cols-2 gap-4'>
+          <Button variant='outline' onClick={handleUpdate}>
+            <FilePenLine className='mr-2 h-4 w-4' /> Edit
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger className='bg-zinc-900 text-zinc-50 inline-flex items-center justify-center rounded-md h-10 px-4 py-2'>
+              <Trash2 className='h-4 w-4' />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Apakah Anda Yakin Ingin Menghapus Data Ini?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Data yang sudah dihapus tidak dapat dikembalikan.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    deleteItem.mutate(id);
+                  }}
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
+      </div>
     );
 };
 

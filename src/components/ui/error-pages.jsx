@@ -6,7 +6,7 @@ export const Error404 = () => {
     return (
         <>
             <section className="min-h-screen flex flex-col gap-5 items-center justify-center">
-                <img src={error404} alt="error-banner" className="w-50" />
+                <img src={error404} alt="error-banner" className="w-64" />
                 <Link to="/" className="hover:underline">
                     Go back to Home
                 </Link>
@@ -18,8 +18,8 @@ export const Error404 = () => {
 export const Error500 = () => {
   return (
     <>
-      <section className='min-h-screen flex flex-col gap-5 items-center justify-center'>
-        <img src={error500} alt='error-banner' className='w-50' />
+      <section className='h-full flex flex-col gap-5 items-center justify-center'>
+        <img src={error500} alt='error-banner' className='w-64' />
         <Link to='/dashboard' className='hover:underline'>
           Go back to dashboard
         </Link>

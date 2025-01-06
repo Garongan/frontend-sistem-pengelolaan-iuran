@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 
 const PageSize = ({ handleChangePageSize }) => {
-    const [position, setPosition] = useState("10");
+    const [position, setPosition] = useState("8");
 
     const changePageSize = (size) => {
         setPosition(size);
@@ -28,9 +28,9 @@ const PageSize = ({ handleChangePageSize }) => {
                 <DropdownMenuLabel>List Size</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup value={position} onValueChange={changePageSize}>
-                    <DropdownMenuRadioItem value="10">10</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="50">50</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="100">100</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="8">8</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="16">16</DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="32">32</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
             </DropdownMenuContent>
         </DropdownMenu>

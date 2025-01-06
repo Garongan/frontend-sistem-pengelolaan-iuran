@@ -2,102 +2,68 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
 import useHouse from '@/hooks/use-house';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 
-const createSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Nama harus lebih dari 2 karakter.',
-  }),
-  price: z
-    .string()
-    .refine((val) => !isNaN(parseFloat(val)), 'harga harus berupa angka')
-    .transform((val) => parseInt(val))
-    .refine((val) => val >= 0, 'harga harus lebih dari 0'),
-  image: z
-    .any()
-    .refine(
-      (files) =>
-        files.length !== 0 &&
-        ['image/png', 'image/jpg', 'image/jpeg', 'image/svg+xml'].includes(
-          files[0].type
-        ),
-      'format gambar tidak sesuai'
-    ),
-});
-
-const updateSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, 'name wajib di isi!'),
-  price: z
-    .string()
-    .refine((val) => !isNaN(parseFloat(val)), 'harga harus berupa angka')
-    .transform((val) => parseInt(val))
-    .refine((val) => val >= 0, 'harga harus lebih dari 0'),
-  image: z
-    .any()
-    .optional()
-    .refine((files) => {
-      if (files.length === 0) return true;
-      return ['image/png', 'imgae/jpg', 'image/jpeg', 'image/svg+xml'].includes(
-        files[0].type
-      );
-    }, 'format gambar tidak sesuai'),
-});
-
 const HouseForm = ({ title }) => {
   const { create, getById, updateById } = useHouse();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [previewImage, setPreviewImage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  function handleImageChange(event) {
-    const { files } = event.target;
-    const displayUrl = URL.createObjectURL(event.target.files[0]);
-
-    return { files, displayUrl };
-  }
+  const formSchema = z.object({
+    house_code: z.string().min(1, {
+      message: 'Kode rumah wajib diisi',
+    }),
+    is_occupied: z.string({
+      required_error: 'Status pernikahan wajib diisi',
+    }),
+  });
 
   const form = useForm({
-    resolver: zodResolver(id ? updateSchema : createSchema),
+    resolver: zodResolver(formSchema),
     mode: 'onChange',
     defaultValues: {
-      name: '',
-      price: '',
-      image: '',
+      house_code: '',
+      is_occupied: '',
     },
   });
 
   const onSubmit = async (data) => {
     const id = form.getValues('id');
+    setIsLoading(true)
     if (id) {
       try {
-        const formData = new FormData();
-        const updatedData = {
+        data = {
           id: id,
-          name: data.name,
-          price: data.price,
+          ...data,
+          is_occupied: data.is_occupied === 'Tidak Dihuni' ? false : true,
         };
-        formData.append('menu', JSON.stringify(updatedData));
-        if (data.image[0]) {
-          formData.append('image', data.image[0]);
-        }
-        const response = await updateById(id, formData);
+        const response = await updateById(id, data);
         if (response && response.statusCode === 200) {
-          navigate('/dashboard/menu');
+          setIsLoading(false)
+          navigate('/dashboard/house');
         }
       } catch (error) {
         toast({
@@ -108,16 +74,13 @@ const HouseForm = ({ title }) => {
       }
     } else {
       try {
-        const formData = new FormData();
-        const newData = {
-          name: data.name,
-          price: data.price,
-        };
-        formData.append('menu', JSON.stringify(newData));
-        formData.append('image', data.image[0]);
-        const response = await create(formData);
+        const response = await create({
+          ...data,
+          is_occupied: data.is_occupied === 'Tidak Dihuni' ? false : true,
+        });
         if (response && response.statusCode === 201) {
-          navigate('/dashboard/menu');
+          setIsLoading(false)
+          navigate('/dashboard/house');
         }
       } catch (error) {
         toast({
@@ -131,12 +94,18 @@ const HouseForm = ({ title }) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const data = await getById(id);
-      form.setValue('id', data?.data.id);
-      form.setValue('name', data?.data.name);
-      form.setValue('price', data?.data.price.toString());
-      setPreviewImage(data?.data.imageResponse.url);
-      form.trigger();
+      try {
+        const data = await getById(id);
+        form.setValue('id', data?.data.id);
+        form.setValue('house_code', data?.data.house_code);
+        form.setValue(
+          'is_occupied',
+          data?.data.is_occupied ? 'Dihuni' : 'Tidak Dihuni'
+        );
+        form.trigger();
+      } catch (error) {
+        console.clear();
+      }
     };
     fetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,62 +124,49 @@ const HouseForm = ({ title }) => {
         >
           <FormField
             control={form.control}
-            name='name'
+            name='house_code'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Menu Name</FormLabel>
+                <FormLabel>Kode Rumah</FormLabel>
                 <FormControl>
-                  <Input placeholder='Menu Baru...' {...field} />
+                  <Input placeholder='Kode Rumah...' {...field} />
                 </FormControl>
                 <FormMessage />
+                <FormDescription>Masukkan kode rumah</FormDescription>
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name='price'
+            name='is_occupied'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Harga Menu</FormLabel>
+                <FormLabel>Status Rumah</FormLabel>
                 <FormControl>
-                  <Input placeholder='Harga Menu Baru...' {...field} />
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder='Pilih status rumah' />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value='Tidak Dihuni'>Tidak Dihuni</SelectItem>
+                      <SelectItem value='Dihuni'>Dihuni</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
+                <FormDescription>Pilih Status Rumah</FormDescription>
               </FormItem>
             )}
           />
-          {previewImage == '' ? (
-            <Skeleton className='h-32 w-60 rounded-xl' />
-          ) : (
-            <img
-              src={previewImage}
-              alt='preview'
-              className='h-32 w-60 object-cover rounded-xl'
-            />
-          )}
-          <FormField
-            control={form.control}
-            name='image'
-            render={({ field: { onChange, ...rest } }) => (
-              <FormItem>
-                <FormLabel>Upload Gambar Menu</FormLabel>
-                <FormControl>
-                  <Input
-                    {...rest}
-                    type='file'
-                    accept='image/png, image/jpg, image/jpeg, image/svg+xml'
-                    onChange={(event) => {
-                      const { files, displayUrl } = handleImageChange(event);
-                      setPreviewImage(displayUrl);
-                      onChange(files);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type='submit'>Submit</Button>
+          <Button disabled={!form.formState.isValid} type='submit'>
+            {isLoading ? <Loader2 className='animate-spin' /> : 'Submit'}
+          </Button>
         </form>
       </Form>
     </>

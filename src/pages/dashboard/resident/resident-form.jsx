@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from '@/components/ui/use-toast';
 import useResident from '@/hooks/use-resident';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -166,20 +167,24 @@ const ResidentForm = ({ title, isEditMode }) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const data = await getById(id);
-      form.setValue('id', data?.data.id);
-      form.setValue('fullname', data?.data.fullname);
-      form.setValue(
-        'is_permanent_resident',
-        data?.data.is_permanent_resident ? 'Tetap' : 'Kontrak'
-      );
-      form.setValue('phone_number', data?.data.phone_number);
-      form.setValue(
-        'is_married',
-        data?.data.is_married ? 'Sudah Menikah' : 'Belum Menikah'
-      );
-      setPreview(data?.data.indentity_card_url);
-      form.trigger();
+      try {
+        const data = await getById(id);
+        form.setValue('id', data?.data.id);
+        form.setValue('fullname', data?.data.fullname);
+        form.setValue(
+          'is_permanent_resident',
+          data?.data.is_permanent_resident ? 'Tetap' : 'Kontrak'
+        );
+        form.setValue('phone_number', data?.data.phone_number);
+        form.setValue(
+          'is_married',
+          data?.data.is_married ? 'Sudah Menikah' : 'Belum Menikah'
+        );
+        setPreview(data?.data.indentity_card_url);
+        form.trigger();
+      } catch (error) {
+        console.clear();
+      }
     };
     fetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -231,7 +236,7 @@ const ResidentForm = ({ title, isEditMode }) => {
                     <SelectItem value='Tetap'>Tetap</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormDescription>Status penghuni rumah</FormDescription>
+                <FormDescription>Pilih status penghuni</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -274,14 +279,20 @@ const ResidentForm = ({ title, isEditMode }) => {
                   </SelectContent>
                 </Select>
                 <FormDescription>
-                  Masukkan status pernikahan sesuai KTP
+                  Pilih status pernikahan sesuai KTP
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {preview !== '' && (
-            <img className='lg:h-64 md:h-52' src={preview} alt='KTP' />
+          {preview === '' ? (
+            <Skeleton className='lg:h-64 md:h-52 aspect-video rounded-xl' />
+          ) : (
+            <img
+              className='lg:h-64 md:h-52 rounded-xl'
+              src={preview}
+              alt='KTP'
+            />
           )}
           <FormField
             control={form.control}

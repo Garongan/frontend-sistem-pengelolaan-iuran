@@ -1,59 +1,55 @@
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
 
-import { Skeleton } from '@/components/ui/skeleton';
-import { priceFormat } from '@/hooks/use-price-format';
 import PropTypes from 'prop-types';
 import ActionList from '../components/ActionList';
 
 const HouseList = ({ data, deleteItem }) => {
-  return (
-    <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className='w-[50px]'>No</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Image</TableHead>
-            <TableHead className='text-right'>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>{priceFormat(item.price)}</TableCell>
-              <TableCell>
-                {item.imageResponse ? (
-                  <img
-                    src={item.imageResponse.url}
-                    alt={item.name}
-                    className='h-32 w-60 object-cover rounded-xl'
-                  />
-                ) : (
-                  <Skeleton className='h-32 w-60 rounded-xl' />
-                )}
-              </TableCell>
-              <TableCell className='text-right'>
-                <ActionList
-                  id={item.id}
-                  deleteItem={deleteItem}
-                  fromWhat='menu'
-                />
-              </TableCell>
+  if (data && data.length > 0) {
+    return (
+      <>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className='w-[50px]'>No</TableHead>
+              <TableHead>Kode Rumah</TableHead>
+              <TableHead>Status Hunian</TableHead>
+              <TableHead className='text-right'>Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </>
+          </TableHeader>
+          <TableBody>
+            {data?.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{item.house_code}</TableCell>
+                <TableCell>{item.is_occupied ? 'Dihuni' : 'Tidak Dihuni'}</TableCell>
+                <TableCell className='text-right'>
+                  <ActionList
+                    id={item.id}
+                    deleteItem={deleteItem}
+                    fromWhat='house'
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableCaption className='pb-3'>Daftar rumah</TableCaption>
+        </Table>
+      </>
+    );
+  }
+
+  return (
+    <Table className='rounded-md'>
+      <TableCaption className='pb-3'>Daftar rumah kosong</TableCaption>
+    </Table>
   );
 };
 
