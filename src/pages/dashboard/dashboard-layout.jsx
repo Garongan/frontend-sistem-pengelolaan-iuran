@@ -95,7 +95,7 @@ const AppSideBar = () => {
                   <Loader2 className='animate-spin' />
                 ) : (
                   <>
-                    <LogOut className='mr-2 h-4 w-4' />
+                    <LogOut />
                     <span>Log out</span>
                   </>
                 )}

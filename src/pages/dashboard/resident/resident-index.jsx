@@ -120,7 +120,9 @@ const DataList = ({ title }) => {
   return (
     <div className='flex flex-col gap-5'>
       <div className='flex items-center justify-between pt-2'>
-        <h2 className='text-3xl font-bold tracking-tight'>{title}</h2>
+        <h2 className='text-xl md:text-3xl font-bold tracking-tight'>
+          {title}
+        </h2>
       </div>
       <div className='flex items-center justify-between'>
         <Link to='/dashboard/resident/new'>

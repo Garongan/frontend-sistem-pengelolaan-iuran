@@ -10,7 +10,7 @@ import {
 
 import { Skeleton } from '@/components/ui/skeleton';
 import PropTypes from 'prop-types';
-import ActionList from '../components/ActionList';
+import ActionList from '../components/action-list';
 
 const ResidentList = ({ data, deleteItem }) => {
   if (data && data.length > 0) {
@@ -51,11 +51,14 @@ const ResidentList = ({ data, deleteItem }) => {
                 {item.is_married ? 'Belum Menikah' : 'Sudah Menikah'}
               </TableCell>
               <TableCell className='text-right'>
-                <ActionList
-                  id={item.id}
-                  deleteItem={deleteItem}
-                  fromWhat='resident'
-                />
+                <div className='flex justify-end'>
+                  <ActionList
+                    id={item.id}
+                    deleteItem={deleteItem}
+                    fromWhat='house'
+                    canDelete={true}
+                  />
+                </div>
               </TableCell>
             </TableRow>
           ))}

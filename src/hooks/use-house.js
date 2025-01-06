@@ -26,12 +26,30 @@ const useHouse = () => {
     return data;
   };
 
+  const addResident = async (id, payload) => {
+    const { data } = await axiosInstance.post(
+      `/houses/add-resident/${id}`,
+      payload
+    );
+    return data;
+  };
+
+  const deleteResident = async (id, payload) => {
+    const { data } = await axiosInstance.patch(
+      `/houses/delete-resident/${id}`,
+      payload
+    );
+    return data;
+  };
+
   return {
     getAll,
     getById,
     create,
     deleteById,
     updateById,
+    addResident,
+    deleteResident,
   };
 };
 

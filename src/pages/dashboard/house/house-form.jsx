@@ -21,7 +21,7 @@ import useHouse from '@/hooks/use-house';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
@@ -52,7 +52,7 @@ const HouseForm = ({ title }) => {
 
   const onSubmit = async (data) => {
     const id = form.getValues('id');
-    setIsLoading(true)
+    setIsLoading(true);
     if (id) {
       try {
         data = {
@@ -62,7 +62,7 @@ const HouseForm = ({ title }) => {
         };
         const response = await updateById(id, data);
         if (response && response.statusCode === 200) {
-          setIsLoading(false)
+          setIsLoading(false);
           navigate('/dashboard/house');
         }
       } catch (error) {
@@ -79,42 +79,47 @@ const HouseForm = ({ title }) => {
           is_occupied: data.is_occupied === 'Tidak Dihuni' ? false : true,
         });
         if (response && response.statusCode === 201) {
-          setIsLoading(false)
+          setIsLoading(false);
           navigate('/dashboard/house');
         }
       } catch (error) {
+        console.clear();
         toast({
           variant: 'destructive',
           title: 'Upsss! Terdapat Kesalahan Server.',
-          description: error.message,
+          description: error.response.data.data,
         });
+        setIsLoading(false);
       }
     }
   };
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const data = await getById(id);
-        form.setValue('id', data?.data.id);
-        form.setValue('house_code', data?.data.house_code);
-        form.setValue(
-          'is_occupied',
-          data?.data.is_occupied ? 'Dihuni' : 'Tidak Dihuni'
-        );
-        form.trigger();
-      } catch (error) {
-        console.clear();
-      }
-    };
-    fetch();
+  const fetch = useCallback(async () => {
+    try {
+      const data = await getById(id);
+      form.setValue('id', data?.data.id);
+      form.setValue('house_code', data?.data.house_code);
+      form.setValue(
+        'is_occupied',
+        data?.data.is_occupied ? 'Dihuni' : 'Tidak Dihuni'
+      );
+      form.trigger();
+    } catch (error) {
+      console.clear();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, form.setValue]);
+  }, [form, id]);
+
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
   return (
     <>
       <div className='flex items-center justify-between space-y-2'>
-        <h2 className='text-3xl font-bold tracking-tight pb-4'>{title}</h2>
+        <h2 className='text-xl md:text-3xl font-bold tracking-tight pb-4'>
+          {title}
+        </h2>
       </div>
       <Form {...form}>
         <form

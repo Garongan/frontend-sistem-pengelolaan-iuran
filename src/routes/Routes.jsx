@@ -8,9 +8,11 @@ import CustomersIndex from '@/pages/dashboard/customers/CustomersIndex';
 import CustomersLayout from '@/pages/dashboard/customers/CustomersLayout';
 import DashboardLayout from '@/pages/dashboard/dashboard-layout';
 import Dashboard from '@/pages/dashboard/dashboard/dashboard';
+import HouseAddResident from '@/pages/dashboard/house/house-add-resident';
 import HouseForm from '@/pages/dashboard/house/house-form';
 import HouseIndex from '@/pages/dashboard/house/house-index';
 import HouseLayout from '@/pages/dashboard/house/house-layout';
+import HouseListResident from '@/pages/dashboard/house/house-list-resident';
 import {
   default as ResidentForm,
   default as TableForm,
@@ -84,6 +86,18 @@ const Routes = createBrowserRouter([
           {
             path: 'update/:id',
             element: <HouseForm title='Formulir Mengubah Rumah' />,
+          },
+          {
+            path: 'add-resident/:id',
+            element: (
+              <HouseAddResident title='Formulir Menambah Penghuni di Rumah' />
+            ),
+          },
+          {
+            path: 'list-resident/:id',
+            element: (
+              <HouseListResident title='Daftar Penghuni di Rumah' />
+            ),
           },
         ],
       },

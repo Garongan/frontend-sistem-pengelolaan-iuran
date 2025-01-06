@@ -24,7 +24,7 @@ import useResident from '@/hooks/use-resident';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -156,44 +156,49 @@ const ResidentForm = ({ title, isEditMode }) => {
           navigate('/dashboard/resident');
         }
       } catch (error) {
+        console.clear();
         toast({
           variant: 'destructive',
           title: 'Upsss! Terdapat Kesalahan Server.',
           description: error.message,
         });
+        setIsLoading(false);
       }
     }
   };
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const data = await getById(id);
-        form.setValue('id', data?.data.id);
-        form.setValue('fullname', data?.data.fullname);
-        form.setValue(
-          'is_permanent_resident',
-          data?.data.is_permanent_resident ? 'Tetap' : 'Kontrak'
-        );
-        form.setValue('phone_number', data?.data.phone_number);
-        form.setValue(
-          'is_married',
-          data?.data.is_married ? 'Sudah Menikah' : 'Belum Menikah'
-        );
-        setPreview(data?.data.indentity_card_url);
-        form.trigger();
-      } catch (error) {
-        console.clear();
-      }
-    };
-    fetch();
+  const fetch = useCallback(async () => {
+    try {
+      const data = await getById(id);
+      form.setValue('id', data?.data.id);
+      form.setValue('fullname', data?.data.fullname);
+      form.setValue(
+        'is_permanent_resident',
+        data?.data.is_permanent_resident ? 'Tetap' : 'Kontrak'
+      );
+      form.setValue('phone_number', data?.data.phone_number);
+      form.setValue(
+        'is_married',
+        data?.data.is_married ? 'Sudah Menikah' : 'Belum Menikah'
+      );
+      setPreview(data?.data.indentity_card_url);
+      form.trigger();
+    } catch (error) {
+      console.clear();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, form.setValue, form]);
+  }, [form, id]);
+
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
   return (
     <div className='py-5'>
       <div className='flex items-center justify-between space-y-2'>
-        <h2 className='text-3xl font-bold tracking-tight pb-4'>{title}</h2>
+        <h2 className='text-xl md:text-3xl font-bold tracking-tight pb-4'>
+          {title}
+        </h2>
       </div>
       <Form {...form}>
         <form
