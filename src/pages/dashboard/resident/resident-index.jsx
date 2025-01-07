@@ -93,10 +93,15 @@ const DataList = ({ title }) => {
       queryClient.invalidateQueries({ queryKey: ['residents'] });
     },
     onError: (error) => {
+      console.clear();
+      let message = error.response.data.message;
+      if (message.includes('constraint violation')) {
+        message = 'Data penghuni sedang atau sudah pernah menempati rumah';
+      }
       toast({
         variant: 'destructive',
         title: 'Upsss! Terdapat Kesalahan Server.',
-        description: error.message,
+        description: message,
       });
     },
   });
@@ -124,8 +129,8 @@ const DataList = ({ title }) => {
           {title}
         </h2>
       </div>
-      <div className='flex items-center justify-between'>
-        <Link to='/dashboard/resident/new'>
+      <div className='flex lg:flex-row lg:items-center lg:justify-between lg:gap-0 flex-col gap-4'>
+        <Link to='/dashboard/resident/new' className='w-fit'>
           <Button>Tambah Penghuni Baru</Button>
         </Link>
 

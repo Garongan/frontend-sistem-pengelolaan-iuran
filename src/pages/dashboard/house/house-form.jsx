@@ -84,10 +84,14 @@ const HouseForm = ({ title }) => {
         }
       } catch (error) {
         console.clear();
+        let message = error.response.data.data;
+        if (message.includes('Duplicate')) {
+          message = 'Data rumah sudah ada'
+        }
         toast({
           variant: 'destructive',
           title: 'Upsss! Terdapat Kesalahan Server.',
-          description: error.response.data.data,
+          description: message,
         });
         setIsLoading(false);
       }

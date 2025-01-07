@@ -112,7 +112,7 @@ const DashboardLayout = () => {
   return (
     <SidebarProvider>
       <AppSideBar />
-      <main className='pt-5 w-full'>
+      <main className='pt-5 w-full overflow-auto'>
         <SidebarTrigger />
         <Outlet />
       </main>
