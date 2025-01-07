@@ -48,6 +48,8 @@ const HouseList = ({ data }) => {
             <TableHead>Kode Rumah</TableHead>
             <TableHead>Status Hunian</TableHead>
             <TableHead>Daftar Penghuni</TableHead>
+            <TableHead>Tanggal Mulai Menghuni</TableHead>
+            <TableHead>Tanggal Berakhir Menghuni</TableHead>
             <TableHead className='text-right'>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -68,6 +70,30 @@ const HouseList = ({ data }) => {
                   </ol>
                 ) : (
                   'Tidak ada penghuni'
+                )}
+              </TableCell>
+              <TableCell>
+                {item.current_resident.length > 0 ? (
+                  <ol>
+                    {item.current_resident.map((value) => (
+                      <li key={value.id}>{value.start_date}</li>
+                    ))}
+                  </ol>
+                ) : (
+                  'Kosong'
+                )}
+              </TableCell>
+              <TableCell>
+                {item.current_resident.length > 0 ? (
+                  <ol>
+                    {item.current_resident.map((value) => (
+                      <li key={value.id}>
+                        {value.end_date ? value.end_date : 'Masih Menghuni'}
+                      </li>
+                    ))}
+                  </ol>
+                ) : (
+                  'Kosong'
                 )}
               </TableCell>
               <TableCell className='text-right'>

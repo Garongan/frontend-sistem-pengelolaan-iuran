@@ -25,8 +25,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
+import { parseDate } from '@/hooks/parse-date';
+import { priceFormat } from '@/hooks/price-format';
 import usePayment from '@/hooks/use-payment';
-import { priceFormat } from '@/hooks/use-price-format';
 import useResident from '@/hooks/use-resident';
 import { cn } from '@/lib/utils';
 import { ResidentComboBox } from '@/shared/resident-combo-box';
@@ -103,6 +104,7 @@ const PaymentForm = ({ title }) => {
     try {
       data = {
         ...data,
+        period: parseDate(data.period),
         is_paid_off: data.is_paid_off === 'Belum Lunas' ? false : true,
       };
       const response = await create(data);

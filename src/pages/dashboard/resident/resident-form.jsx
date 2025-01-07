@@ -131,6 +131,7 @@ const ResidentForm = ({ title, isEditMode }) => {
           navigate('/dashboard/resident');
         }
       } catch (error) {
+        console.clear();
         toast({
           variant: 'destructive',
           title: 'Upsss! Terdapat Kesalahan Server.',
@@ -184,7 +185,7 @@ const ResidentForm = ({ title, isEditMode }) => {
       setPreview(data?.data.indentity_card_url);
       form.trigger();
     } catch (error) {
-      // console.clear();
+      console.clear();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, id]);

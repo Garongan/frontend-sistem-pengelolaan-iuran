@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { parseDate } from '@/hooks/parse-date';
 import useHouse from '@/hooks/use-house';
 import useResident from '@/hooks/use-resident';
 import { cn } from '@/lib/utils';
@@ -56,6 +57,10 @@ const HouseAddResident = ({ title }) => {
 
   const onSubmit = async (data) => {
     setIsLoading(true);
+    data = {
+      ...data,
+      start_date: parseDate(data.start_date),
+    };
     const response = await addResident(id, data);
     if (response && response.statusCode === 200) {
       setIsLoading(false);

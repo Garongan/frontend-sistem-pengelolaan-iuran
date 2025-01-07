@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { priceFormat } from '@/hooks/use-price-format';
+import { priceFormat } from '@/hooks/price-format';
 import PropTypes from 'prop-types';
 
 const ExpenseList = ({ data }) => {
@@ -19,7 +19,7 @@ const ExpenseList = ({ data }) => {
             <TableHead className='w-[50px]'>No</TableHead>
             <TableHead>Tanggal Pengeluaran</TableHead>
             <TableHead>Deskripsi</TableHead>
-            <TableHead>Jumlah Pengeluaran</TableHead>
+            <TableHead className='text-right'>Jumlah Pengeluaran</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -28,7 +28,7 @@ const ExpenseList = ({ data }) => {
               <TableCell>{index + 1}</TableCell>
               <TableCell>{item.date}</TableCell>
               <TableCell>{item.description}</TableCell>
-              <TableCell>{priceFormat(item.amount)}</TableCell>
+              <TableCell className='text-right'>{priceFormat(item.amount)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

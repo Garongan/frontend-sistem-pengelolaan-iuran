@@ -17,8 +17,9 @@ import {
 } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
+import { parseDate } from '@/hooks/parse-date';
+import { priceFormat } from '@/hooks/price-format';
 import useExpense from '@/hooks/use-expense';
-import { priceFormat } from '@/hooks/use-price-format';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { format } from 'date-fns';
@@ -66,6 +67,10 @@ const ExpenseForm = ({ title }) => {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
+      data = {
+        ...data,
+        date: parseDate(data.date),
+      };
       const response = await create(data);
       if (response && response.statusCode === 201) {
         setIsLoading(false);

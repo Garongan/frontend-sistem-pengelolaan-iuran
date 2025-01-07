@@ -83,8 +83,8 @@ const DataList = ({ title }) => {
         totalElement: data.total,
         page: data.current_page,
         size: data.per_page,
-        hasNext: data.links[2].active,
-        hasPrevious: data.links[0].active,
+        hasNext: data.next_page_url !== null,
+        hasPrevious: data.prev_page_url !== null,
       });
     }
     searchForm.setValue('search', houseCode);

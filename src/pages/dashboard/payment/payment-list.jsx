@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { priceFormat } from '@/hooks/use-price-format';
+import { priceFormat } from '@/hooks/price-format';
 import PropTypes from 'prop-types';
 
 const PaymentList = ({ data }) => {
@@ -18,11 +18,10 @@ const PaymentList = ({ data }) => {
           <TableRow>
             <TableHead className='w-[50px]'>No</TableHead>
             <TableHead>Nama Lengkap</TableHead>
-            <TableHead>Nomor Telepon</TableHead>
             <TableHead>Jumlah Iuran</TableHead>
             <TableHead>Tipe Iuran</TableHead>
             <TableHead className='min-w-40'>Tanggal Iuran</TableHead>
-            <TableHead>Status Pembayaran</TableHead>
+            <TableHead className='text-right'>Status Pembayaran</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -30,13 +29,12 @@ const PaymentList = ({ data }) => {
             <TableRow key={index}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>{item.resident.fullname}</TableCell>
-              <TableCell>{item.resident.phone_number}</TableCell>
               <TableCell>{priceFormat(item.amount)}</TableCell>
               <TableCell className='font-bold'>
                 {item.payment_type.toUpperCase()}
               </TableCell>
               <TableCell>{item.period}</TableCell>
-              <TableCell className='font-bold'>
+              <TableCell className='font-bold text-right'>
                 {item.is_paid_off ? 'LUNAS' : 'BELUM LUNAS'}
               </TableCell>
             </TableRow>
@@ -49,7 +47,9 @@ const PaymentList = ({ data }) => {
 
   return (
     <Table className='rounded-md'>
-      <TableCaption className='pb-3'>Daftar pembayaran iuran kosong</TableCaption>
+      <TableCaption className='pb-3'>
+        Daftar pembayaran iuran kosong
+      </TableCaption>
     </Table>
   );
 };

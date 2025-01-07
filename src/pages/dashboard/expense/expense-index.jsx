@@ -92,7 +92,7 @@ const DataList = ({ title }) => {
   };
 
   const { data, isSuccess } = useQuery({
-    queryKey: ['expense', page, size],
+    queryKey: ['expense', year, month, page, size],
     queryFn: handleGetAll,
     placeholderData: keepPreviousData,
     staleTime: 5000,
@@ -105,8 +105,8 @@ const DataList = ({ title }) => {
         totalElement: data.total,
         page: data.current_page,
         size: data.per_page,
-        hasNext: data.links[2].active,
-        hasPrevious: data.links[0].active,
+        hasNext: data.next_page_url !== null,
+        hasPrevious: data.prev_page_url !== null,
       });
     }
     if (date) {

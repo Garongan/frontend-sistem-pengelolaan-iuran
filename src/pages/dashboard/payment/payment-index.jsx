@@ -16,7 +16,7 @@ import { CalendarIcon, X } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import CustomersList from './payment-list';
+import PaymentList from './payment-list';
 
 const PaymentIndex = ({ title }) => {
   return <DataList title={title} />;
@@ -95,8 +95,8 @@ const DataList = ({ title }) => {
         totalElement: data.total,
         page: data.current_page,
         size: data.per_page,
-        hasNext: data.links[2].active,
-        hasPrevious: data.links[0].active,
+        hasNext: data.next_page_url !== null,
+        hasPrevious: data.prev_page_url !== null,
       });
     }
     if (date) {
@@ -159,7 +159,7 @@ const DataList = ({ title }) => {
         </div>
       </div>
       <div className='rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50'>
-        <CustomersList data={data?.data} />
+        <PaymentList data={data?.data} />
       </div>
       <PaginationComponent
         paging={paging}
