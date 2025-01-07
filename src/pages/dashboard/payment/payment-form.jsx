@@ -46,7 +46,7 @@ const PaymentForm = ({ title }) => {
   const navigate = useNavigate();
   const [selectedResident, setSelectedResident] = useState({
     id: null,
-    name: '',
+    fullname: '',
   });
   const [dateFormOpen, setDateFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,12 +76,16 @@ const PaymentForm = ({ title }) => {
   });
 
   const handleGetAll = async () => {
-    const response = await getAll({
-      name: selectedResident.name,
-      page: 1,
-      size: 8,
-    });
-    return response.data;
+    try {
+      const response = await getAll({
+        fullname: selectedResident.fullname,
+        page: 1,
+        size: 8,
+      });
+      return response.data;
+    } catch (error) {
+      console.clear();
+    }
   };
 
   const { data } = useQuery({
@@ -113,10 +117,12 @@ const PaymentForm = ({ title }) => {
         navigate('/dashboard/payment');
       }
     } catch (error) {
+      console.clear();
+      let message = error.response.data.error;
       toast({
         variant: 'destructive',
         title: 'Upsss! Terdapat Kesalahan Server.',
-        description: error.message,
+        description: message,
       });
       setIsLoading(false);
     }

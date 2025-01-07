@@ -37,7 +37,7 @@ const HouseAddResident = ({ title }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedResident, setSelectedResident] = useState({
     id: null,
-    name: '',
+    fullname: '',
   });
   const [dateFormOpen, setDateFormOpen] = useState(false);
 
@@ -71,7 +71,7 @@ const HouseAddResident = ({ title }) => {
   const handleGetAll = async () => {
     try {
       const response = await getAll({
-        name: selectedResident.name,
+        fullname: selectedResident.fullname,
         page: 1,
         size: 8,
       });

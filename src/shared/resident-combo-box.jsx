@@ -148,10 +148,10 @@ function ResidentList({ setOpen, setSelectedResident, dataList }) {
           {dataList?.map((resident) => (
             <CommandItem
               key={resident.id}
-              value={resident.id}
+              value={resident.fullname}
               onSelect={(value) => {
                 setSelectedResident(
-                  dataList.find((priority) => priority.id === value) || null
+                  dataList.find((priority) => priority.fullname === value) || null
                 );
                 setOpen(false);
               }}

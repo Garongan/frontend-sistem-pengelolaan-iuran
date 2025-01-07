@@ -34,7 +34,7 @@ const DataList = ({ title }) => {
   const queryClient = useQueryClient();
   const { getAll, deleteById } = useResident();
   const [searchParams, setSearchParams] = useSearchParams();
-  const name = searchParams.get('name') || null;
+  const fullname = searchParams.get('fullname') || null;
   const page = searchParams.get('page') || 1;
   const size = searchParams.get('size') || 8;
   const [paging, setPaging] = useState({
@@ -55,14 +55,14 @@ const DataList = ({ title }) => {
   const onSubmitSearch = (data) => {
     setSearchParams({
       ...searchParams,
-      name: data.search,
+      fullname: data.search,
     });
   };
 
   const handleGetAll = async () => {
     try {
       const response = await getAll({
-        name: name,
+        name: fullname,
         page: page,
         size: size,
       });
@@ -72,8 +72,8 @@ const DataList = ({ title }) => {
     }
   };
 
-  const handleDeleteSearchName = () => {
-    searchParams.delete('name');
+  const handleDeleteSearch = () => {
+    searchParams.delete('fullname');
     setSearchParams(searchParams);
   };
 
@@ -85,7 +85,7 @@ const DataList = ({ title }) => {
   };
 
   const { data, isSuccess } = useQuery({
-    queryKey: ['residents', name],
+    queryKey: ['residents', fullname],
     queryFn: handleGetAll,
     placeholderData: keepPreviousData,
     staleTime: 5000,
@@ -121,8 +121,8 @@ const DataList = ({ title }) => {
         hasPrevious: data.prev_page_url !== null,
       });
     }
-    searchForm.setValue('search', name);
-  }, [data, isSuccess, name, searchForm]);
+    searchForm.setValue('search', fullname);
+  }, [data, isSuccess, fullname, searchForm]);
 
   if (!isSuccess) return <LoaderList />;
 
@@ -157,7 +157,7 @@ const DataList = ({ title }) => {
                 variant='ghost'
                 size='icon'
                 className='absolute right-1 top-1/2 -translate-y-1/2'
-                onClick={handleDeleteSearchName}
+                onClick={handleDeleteSearch}
               >
                 <X />
               </Button>
