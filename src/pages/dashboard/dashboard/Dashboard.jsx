@@ -3,6 +3,7 @@ import useReport from '@/hooks/use-report';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { Chart } from './chart';
 import MonthlyBalance from './monthly-balance';
 import MonthlyIncome from './monthly-income';
 import MonthlyReportList from './monthly-report-list';
@@ -11,6 +12,8 @@ import MonthlySpending from './monthly-spending';
 const Dashboard = ({ title }) => {
   const { getMonthly, getYearly, downloadReportMonnthly } = useReport();
   const [date, setDate] = useState(new Date());
+  const [dateFormOpen, setDateFormOpen] = useState(false);
+  let yearlyParam = date.getFullYear();
 
   const handleGetMonthly = async () => {
     try {
@@ -26,7 +29,7 @@ const Dashboard = ({ title }) => {
 
   const handleGetYearly = async () => {
     let response = await getYearly({
-      month: date.getMonth() + 1,
+      year: yearlyParam,
     });
     return response.data;
   };
@@ -65,7 +68,7 @@ const Dashboard = ({ title }) => {
   });
 
   const yearly = useQuery({
-    queryKey: ['report-year', date],
+    queryKey: ['report-year', yearlyParam],
     queryFn: handleGetYearly,
     placeholderData: keepPreviousData,
     staleTime: 5000,
@@ -80,27 +83,33 @@ const Dashboard = ({ title }) => {
       </div>
       <div className='grid grid-cols-1 gap-4'>
         <div className='grid grid-cols-1 gap-4 col-span-2'>
-          <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
-            <MonthlyBalance
+          <Chart chartData={yearly?.data} year={yearlyParam} />
+          <div className='flex flex-col gap-4'>
+            <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
+              <MonthlyBalance
+                month={date.getMonth() + 1}
+                balance={monthly.data?.balance}
+              />
+              <MonthlyIncome
+                month={date.getMonth() + 1}
+                income={monthly.data?.income}
+              />
+              <MonthlySpending
+                month={date.getMonth() + 1}
+                spending={monthly.data?.spending}
+              />
+            </div>
+            <MonthlyReportList
+              data={monthly.data}
+              date={date}
+              handleDeleteDate={handleDeleteDate}
+              setDate={setDate}
+              handleDownloadReport={handleDownloadReport}
+              dateFormOpen={dateFormOpen}
               month={date.getMonth() + 1}
-              balance={monthly.data?.balance}
-            />
-            <MonthlyIncome
-              month={date.getMonth() + 1}
-              income={monthly.data?.income}
-            />
-            <MonthlySpending
-              month={date.getMonth() + 1}
-              spending={monthly.data?.spending}
+              setDateFormOpen={setDateFormOpen}
             />
           </div>
-          <MonthlyReportList
-            data={monthly.data}
-            date={date}
-            handleDeleteDate={handleDeleteDate}
-            setDate={setDate}
-            handleDownloadReport={handleDownloadReport}
-          />
         </div>
       </div>
     </>

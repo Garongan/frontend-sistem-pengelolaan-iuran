@@ -20,18 +20,17 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { CalendarIcon, File, X } from 'lucide-react';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
 
 export default function MonthlyReportList({
   data,
-  date,
-  setDate,
-  handleDeleteDate,
   month,
   handleDownloadReport,
+  dateFormOpen,
+  setDateFormOpen,
+  date,
+  handleDeleteDate,
+  setDate,
 }) {
-  const [dateFormOpen, setDateFormOpen] = useState(false);
-
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex items-center'>
@@ -185,19 +184,21 @@ function ListSpending({ data, month }) {
 
 MonthlyReportList.propTypes = {
   data: PropTypes.object,
-  date: PropTypes.object,
-  setDate: PropTypes.func,
-  handleDeleteDate: PropTypes.func,
-  month: PropTypes.string,
+  month: PropTypes.number,
   handleDownloadReport: PropTypes.func,
+  dateFormOpen: PropTypes.bool,
+  setDateFormOpen: PropTypes.func,
+  date: PropTypes.object,
+  handleDeleteDate: PropTypes.func,
+  setDate: PropTypes.func,
 };
 
 ListIncome.propTypes = {
   data: PropTypes.array,
-  month: PropTypes.string,
+  month: PropTypes.number,
 };
 
 ListSpending.propTypes = {
   data: PropTypes.array,
-  month: PropTypes.string,
+  month: PropTypes.number,
 };
