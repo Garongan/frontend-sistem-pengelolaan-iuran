@@ -1,18 +1,18 @@
 import { Error404, Error500 } from '@/components/ui/error-pages';
 import Login from '@/pages/auth/login';
-import BillsForm from '@/pages/dashboard/bills/BillsForm';
-import BillsIndex from '@/pages/dashboard/bills/BillsIndex';
-import BillsLayout from '@/pages/dashboard/bills/BillsLayout';
-import CustomersForm from '@/pages/dashboard/customers/CustomersForm';
-import CustomersIndex from '@/pages/dashboard/customers/CustomersIndex';
-import CustomersLayout from '@/pages/dashboard/customers/CustomersLayout';
 import DashboardLayout from '@/pages/dashboard/dashboard-layout';
 import Dashboard from '@/pages/dashboard/dashboard/dashboard';
+import ExpenseForm from '@/pages/dashboard/expense/expense-form';
+import ExpenseIndex from '@/pages/dashboard/expense/expense-index';
+import ExpenseLayout from '@/pages/dashboard/expense/expense-layout';
 import HouseAddResident from '@/pages/dashboard/house/house-add-resident';
 import HouseForm from '@/pages/dashboard/house/house-form';
 import HouseIndex from '@/pages/dashboard/house/house-index';
 import HouseLayout from '@/pages/dashboard/house/house-layout';
 import HouseListResident from '@/pages/dashboard/house/house-list-resident';
+import PaymentForm from '@/pages/dashboard/payment/payment-form';
+import PaymentIndex from '@/pages/dashboard/payment/payment-index';
+import PaymentLayout from '@/pages/dashboard/payment/payment-layout';
 import {
   default as ResidentForm,
   default as TableForm,
@@ -95,47 +95,37 @@ const Routes = createBrowserRouter([
           },
           {
             path: 'list-resident/:id',
-            element: (
-              <HouseListResident title='Daftar Penghuni di Rumah' />
-            ),
+            element: <HouseListResident title='Daftar Penghuni di Rumah' />,
           },
         ],
       },
       {
         path: 'payment',
-        element: <CustomersLayout />,
+        element: <PaymentLayout />,
         errorElement: <Error500 />,
         children: [
           {
             index: true,
-            element: <CustomersIndex title='Customers' />,
+            element: <PaymentIndex title='Pembayaran' />,
           },
           {
             path: 'new',
-            element: <CustomersForm title='Create Customer Form' />,
-          },
-          {
-            path: 'update/:id',
-            element: <CustomersForm title='Update Customer Form' />,
+            element: <PaymentForm title='Formulir Pembayaran Iuran Baru' />,
           },
         ],
       },
       {
-        path: 'bills',
-        element: <BillsLayout />,
+        path: 'expense',
+        element: <ExpenseLayout />,
         errorElement: <Error500 />,
         children: [
           {
             index: true,
-            element: <BillsIndex title='Bills' />,
+            element: <ExpenseIndex title='Pengeluaran' />,
           },
           {
             path: 'new',
-            element: <BillsForm title='Create Bill Form' />,
-          },
-          {
-            path: 'update/:id',
-            element: <BillsForm title='Update Bill Form' />,
+            element: <ExpenseForm title='Formulir Pengeluaran Iuran Baru' />,
           },
         ],
       },

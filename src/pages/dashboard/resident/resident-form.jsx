@@ -82,9 +82,9 @@ const ResidentForm = ({ title, isEditMode }) => {
     mode: 'onChange',
     defaultValues: {
       fullname: '',
-      is_permanent_resident: '',
+      is_permanent_resident: undefined,
       phone_number: '',
-      is_married: '',
+      is_married: undefined,
       identity_card_image: undefined,
     },
   });
@@ -184,14 +184,14 @@ const ResidentForm = ({ title, isEditMode }) => {
       setPreview(data?.data.indentity_card_url);
       form.trigger();
     } catch (error) {
-      console.clear();
+      // console.clear();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, id]);
 
   useEffect(() => {
     fetch();
-  }, [fetch]);
+  }, [fetch, form, form.getFieldState]);
 
   return (
     <div className='py-5'>
@@ -203,7 +203,7 @@ const ResidentForm = ({ title, isEditMode }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-8'
+          className='space-y-8 px-2'
           autoComplete='off'
         >
           <FormField

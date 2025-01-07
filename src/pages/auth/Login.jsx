@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Toaster } from '@/components/ui/toaster';
 import useAuth from '@/hooks/use-auth';
 import { Home, Loader2 } from 'lucide-react';
 
@@ -29,7 +30,7 @@ const schema = z.object({
 });
 
 const Login = () => {
-  const service = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [failLogin, setFailLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +48,7 @@ const Login = () => {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const response = await service.login(data);
+      const response = await login(data);
       if (response && response.statusCode === 200) {
         setFailLogin(false);
         setIsLoading(false);
@@ -55,12 +56,14 @@ const Login = () => {
         navigate('/dashboard');
       }
     } catch (error) {
+      console.clear();
       setFailLogin(true);
     }
   };
 
   const failLoginAlert = () => {
     setFailLogin(false);
+    setIsLoading(false);
     toast({
       variant: 'destructive',
       title: 'Upsss! Terdapat Kesalahan Login.',
@@ -165,6 +168,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <Toaster />
     </>
   );
 };

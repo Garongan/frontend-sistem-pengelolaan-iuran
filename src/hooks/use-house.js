@@ -16,11 +16,6 @@ const useHouse = () => {
     return data;
   };
 
-  const deleteById = async (id) => {
-    const { data } = await axiosInstance.delete(`/houses/${id}`);
-    return data;
-  };
-
   const updateById = async (id, payload) => {
     const { data } = await axiosInstance.put(`/houses/${id}`, payload);
     return data;
@@ -46,7 +41,6 @@ const useHouse = () => {
     getAll,
     getById,
     create,
-    deleteById,
     updateById,
     addResident,
     deleteResident,

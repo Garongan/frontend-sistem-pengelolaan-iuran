@@ -18,6 +18,7 @@ import {
   LayoutDashboard,
   Loader2,
   LogOut,
+  Receipt,
   Users,
 } from 'lucide-react';
 import PropTypes from 'prop-types';
@@ -54,9 +55,14 @@ const AppSideBar = () => {
       icon: Home,
     },
     {
-      title: 'Pembayaran',
+      title: 'Pembayaran Iuran',
       url: '/dashboard/payment',
       icon: CreditCard,
+    },
+    {
+      title: 'Pengeluaran Iuran',
+      url: '/dashboard/expense',
+      icon: Receipt,
     },
   ];
 

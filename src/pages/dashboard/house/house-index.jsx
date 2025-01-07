@@ -1,18 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { toast } from '@/components/ui/use-toast';
 import useHouse from '@/hooks/use-house';
 import LoaderList from '@/shared/loader-list';
 import PageSize from '@/shared/page-size';
 import PaginationComponent from '@/shared/pagination-component';
-import {
-  QueryClient,
-  QueryClientProvider,
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Search, X } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
@@ -20,21 +12,14 @@ import { useForm } from 'react-hook-form';
 import { Link, useSearchParams } from 'react-router-dom';
 import HouseList from './house-list';
 
-const queryClient = new QueryClient();
-
 const HouseIndex = ({ title }) => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <DataList title={title} />
-    </QueryClientProvider>
-  );
+  return <DataList title={title} />;
 };
 
 const DataList = ({ title }) => {
-  const queryClient = useQueryClient();
-  const { getAll, deleteById } = useHouse();
+  const { getAll } = useHouse();
   const [searchParams, setSearchParams] = useSearchParams();
-  const houseCode = searchParams.get('houseCode') || '';
+  const houseCode = searchParams.get('houseCode') || null;
   const page = searchParams.get('page') || 1;
   const size = searchParams.get('size') || 8;
   const [paging, setPaging] = useState({
@@ -58,18 +43,22 @@ const DataList = ({ title }) => {
   };
 
   const handleGetAll = async () => {
-    const response = await getAll({
-      name: name,
-      page: page,
-      size: size,
-    });
-    return response.data;
+    try {
+      const response = await getAll({
+        houseCode: houseCode,
+        page: page,
+        size: size,
+      });
+      return response.data;
+    } catch (error) {
+      console.clear();
+    }
   };
 
   const onSubmitSearch = (data) => {
     setSearchParams({
       ...searchParams,
-      name: data.search,
+      houseCode: data.search,
     });
   };
 
@@ -87,20 +76,6 @@ const DataList = ({ title }) => {
     staleTime: 5000,
   });
 
-  const deleteItem = useMutation({
-    mutationFn: deleteById,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['houses'] });
-    },
-    onError: (error) => {
-      toast({
-        variant: 'destructive',
-        title: 'Upsss! Terdapat Kesalahan Server.',
-        description: error.message,
-      });
-    },
-  });
-
   useEffect(() => {
     if (isSuccess) {
       setPaging({
@@ -112,7 +87,8 @@ const DataList = ({ title }) => {
         hasPrevious: data.links[0].active,
       });
     }
-  }, [data, isSuccess]);
+    searchForm.setValue('search', houseCode);
+  }, [data, houseCode, isSuccess, searchForm]);
 
   if (!isSuccess) return <LoaderList />;
 
@@ -123,7 +99,7 @@ const DataList = ({ title }) => {
           {title}
         </h2>
       </div>
-      <div className='flex items-center justify-between'>
+      <div className='flex lg:flex-row lg:items-center lg:justify-between lg:gap-0 flex-col gap-4'>
         <Link to='/dashboard/house/new'>
           <Button>Tambah Rumah Baru</Button>
         </Link>
@@ -159,7 +135,7 @@ const DataList = ({ title }) => {
         </div>
       </div>
       <div className='rounded-lg border border-zinc-200 bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50'>
-        <HouseList data={data?.data} deleteItem={deleteItem} />
+        <HouseList data={data?.data} />
       </div>
       <PaginationComponent
         paging={paging}

@@ -60,7 +60,7 @@ export function ResidentComboBox({
                     variant='outline'
                     role='combobox'
                     className={cn(
-                      'w-[240px] justify-between font-normal',
+                      'w-full justify-between font-normal',
                       !field.value && 'text-muted-foreground'
                     )}
                   >
@@ -73,7 +73,7 @@ export function ResidentComboBox({
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className='w-[200px] p-0' align='start'>
+              <PopoverContent className='w-full p-0' align='start'>
                 <ResidentList
                   setOpen={setOpen}
                   setSelectedResident={setSelectedResident}

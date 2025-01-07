@@ -19,10 +19,11 @@ import useResident from '@/hooks/use-resident';
 import { cn } from '@/lib/utils';
 import { ResidentComboBox } from '@/shared/resident-combo-box';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { CalendarIcon, Loader2 } from 'lucide-react';
 import PropTypes from 'prop-types';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
@@ -38,7 +39,6 @@ const HouseAddResident = ({ title }) => {
     name: '',
   });
   const [dateFormOpen, setDateFormOpen] = useState(false);
-  const [dataResidents, setDataResidents] = useState({});
 
   const formSchema = z.object({
     resident_id: z.string().uuid({ message: 'Id tidak valid' }),
@@ -63,34 +63,45 @@ const HouseAddResident = ({ title }) => {
     }
   };
 
-  const handleGetAll = useCallback(async () => {
-    const response = await getAll({
-      name: selectedResident.name,
-      page: 1,
-      size: 8,
-    });
-    setDataResidents(response.data);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedResident.name]);
+  const handleGetAll = async () => {
+    try {
+      const response = await getAll({
+        name: selectedResident.name,
+        page: 1,
+        size: 8,
+      });
+      return response.data;
+    } catch (error) {
+      console.clear();
+    }
+  };
+
+  const { data } = useQuery({
+    queryKey: ['houseResidents', selectedResident],
+    queryFn: handleGetAll,
+    placeholderData: keepPreviousData,
+    staleTime: 5000,
+  });
 
   useEffect(() => {
-    handleGetAll();
     form.setValue('resident_id', selectedResident.id);
-  }, [form, handleGetAll, selectedResident]);
+  }, [form, selectedResident]);
 
   return (
     <>
       <div className='flex items-center justify-between space-y-2'>
-        <h2 className='text-xl md:text-3xl font-bold tracking-tight pb-4'>{title}</h2>
+        <h2 className='text-xl md:text-3xl font-bold tracking-tight pb-4'>
+          {title}
+        </h2>
       </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-8'
+          className='space-y-8 px-2'
           autoComplete='off'
         >
           <ResidentComboBox
-            dataList={dataResidents?.data}
+            dataList={data?.data}
             form={form}
             selectedResident={selectedResident}
             setSelectedResident={setSelectedResident}
@@ -107,7 +118,7 @@ const HouseAddResident = ({ title }) => {
                       <Button
                         variant={'outline'}
                         className={cn(
-                          'w-full sm:w-[240px] pl-3 text-left font-normal',
+                          'w-full pl-3 text-left font-normal',
                           !field.value && 'text-muted-foreground'
                         )}
                       >

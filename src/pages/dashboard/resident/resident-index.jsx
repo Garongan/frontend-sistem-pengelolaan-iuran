@@ -34,7 +34,7 @@ const DataList = ({ title }) => {
   const queryClient = useQueryClient();
   const { getAll, deleteById } = useResident();
   const [searchParams, setSearchParams] = useSearchParams();
-  const name = searchParams.get('name') || '';
+  const name = searchParams.get('name') || null;
   const page = searchParams.get('page') || 1;
   const size = searchParams.get('size') || 8;
   const [paging, setPaging] = useState({
@@ -60,12 +60,16 @@ const DataList = ({ title }) => {
   };
 
   const handleGetAll = async () => {
-    const response = await getAll({
-      name: name,
-      page: page,
-      size: size,
-    });
-    return response.data;
+    try {
+      const response = await getAll({
+        name: name,
+        page: page,
+        size: size,
+      });
+      return response.data;
+    } catch (error) {
+      console.clear();
+    }
   };
 
   const handleDeleteSearchName = () => {

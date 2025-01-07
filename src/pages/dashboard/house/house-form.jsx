@@ -46,7 +46,7 @@ const HouseForm = ({ title }) => {
     mode: 'onChange',
     defaultValues: {
       house_code: '',
-      is_occupied: '',
+      is_occupied: undefined,
     },
   });
 
@@ -109,14 +109,14 @@ const HouseForm = ({ title }) => {
       );
       form.trigger();
     } catch (error) {
-      console.clear();
+      // console.clear();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, id]);
 
   useEffect(() => {
     fetch();
-  }, [fetch]);
+  }, [fetch, form]);
 
   return (
     <>
@@ -128,7 +128,7 @@ const HouseForm = ({ title }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='space-y-8'
+          className='space-y-8 px-2'
           autoComplete='off'
         >
           <FormField
