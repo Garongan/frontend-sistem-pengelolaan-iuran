@@ -13,7 +13,7 @@ const Dashboard = ({ title }) => {
   const { getMonthly, getYearly, downloadReportMonnthly } = useReport();
   const [date, setDate] = useState(new Date());
   const [dateFormOpen, setDateFormOpen] = useState(false);
-  let yearlyParam = date.getFullYear();
+  const [yearlyParam, setYearlyParam] = useState(date.getFullYear());
 
   const handleGetMonthly = async () => {
     try {
@@ -83,7 +83,11 @@ const Dashboard = ({ title }) => {
       </div>
       <div className='grid grid-cols-1 gap-4'>
         <div className='grid grid-cols-1 gap-4 col-span-2'>
-          <Chart chartData={yearly?.data} year={yearlyParam} />
+          <Chart
+            chartData={yearly?.data}
+            year={yearlyParam}
+            handleChangeYear={setYearlyParam}
+          />
           <div className='flex flex-col gap-4'>
             <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
               <MonthlyBalance

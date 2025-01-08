@@ -18,6 +18,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { monthFormat } from '@/hooks/month-format';
 import PropTypes from 'prop-types';
 
@@ -36,7 +43,7 @@ const chartConfig = {
   },
 };
 
-export function Chart({ chartData, year }) {
+export function Chart({ chartData, year, handleChangeYear }) {
   chartData = chartData?.map((value) => {
     return {
       month: monthFormat(value.month),
@@ -46,15 +53,47 @@ export function Chart({ chartData, year }) {
     };
   });
 
+  let years = [];
+  for (let index = 0; index < 10; index++) {
+    years = [...years, new Date().getFullYear() - index];
+  }
+
   return (
     <div className='lg:flex lg:justify-center lg:bg-white lg:rounded-lg lg:shadow-sm lg:border-zinc-200 lg:border'>
       <Card className='lg:w-3/4 lg:bg-transparent lg:shadow-none lg:border-none w-full'>
-        <CardHeader>
-          <CardTitle>Laporan Tahun {year}</CardTitle>
-          <CardDescription>
-            Jumlah pemasukan dan pengeluaran per bulan di tahun {year}
-          </CardDescription>
-        </CardHeader>
+        <div className='flex justify-between sm:flex-row flex-col'>
+          <CardHeader>
+            <CardTitle>Laporan Tahun {year}</CardTitle>
+            <CardDescription>
+              Jumlah pemasukan dan pengeluaran per bulan di tahun {year}
+            </CardDescription>
+          </CardHeader>
+          <div className='p-6'>
+            <Select value={year} onValueChange={handleChangeYear}>
+              <SelectTrigger
+                className='ml-auto h-7 w-[130px] rounded-lg pl-2.5'
+                aria-label='Select a value'
+              >
+                <SelectValue placeholder='Select month' />
+              </SelectTrigger>
+              <SelectContent align='end' className='rounded-xl'>
+                {years.map((value, index) => {
+                  return (
+                    <SelectItem
+                      key={index}
+                      value={value}
+                      className='rounded-lg [&_span]:flex'
+                    >
+                      <div className='flex items-center gap-2 text-sm'>
+                        {value}
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
         <CardContent>
           {chartData ? (
             <ChartContainer config={chartConfig}>
@@ -170,4 +209,5 @@ export function Chart({ chartData, year }) {
 Chart.propTypes = {
   year: PropTypes.number,
   chartData: PropTypes.array,
+  handleChangeYear: PropTypes.func,
 };
