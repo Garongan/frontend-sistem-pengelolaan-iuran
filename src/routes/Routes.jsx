@@ -46,6 +46,7 @@ const Routes = createBrowserRouter([
       {
         index: true,
         element: <Dashboard title='Dashboard' />,
+        errorElement: <Error500 />,
       },
       {
         path: 'resident',

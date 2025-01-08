@@ -78,7 +78,7 @@ const ResidentList = ({ data, deleteItem }) => {
                   <ActionList
                     id={item.id}
                     deleteItem={deleteItem}
-                    fromWhat='house'
+                    fromWhat='resident'
                     canDelete={true}
                   />
                 </div>

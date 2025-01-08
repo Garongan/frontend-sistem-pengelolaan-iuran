@@ -27,7 +27,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 const AppSideBar = () => {
   const user = localStorage.getItem('user');
-  const name = user ? JSON.parse(user).user.name : '';
+  const name = user ? JSON.parse(user).user[0].name : '';
   const navigate = useNavigate();
   const authService = useAuthService();
   const [isLoading, setIsLoading] = useState(false);

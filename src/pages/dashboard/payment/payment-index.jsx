@@ -65,15 +65,24 @@ const DataList = ({ title }) => {
 
   const handleGetAll = async () => {
     let response;
-    if (year === '' || month === '') {
+    try {
+      if (year === '' || month === '') {
+        response = await getAll({
+          page: page,
+          size: size,
+        });
+      } else {
+        response = await getAll({
+          year: year,
+          month: month,
+          page: page,
+          size: size,
+        });
+      }
+    } catch (error) {
+      console.clear();
+      handleDeletePeriod();
       response = await getAll({
-        page: page,
-        size: size,
-      });
-    } else {
-      response = await getAll({
-        year: year,
-        month: month,
         page: page,
         size: size,
       });
