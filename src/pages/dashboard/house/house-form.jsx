@@ -84,9 +84,11 @@ const HouseForm = ({ title }) => {
         }
       } catch (error) {
         console.clear();
-        let message = error.response.data.data;
-        if (message.includes('Duplicate')) {
-          message = 'Data rumah sudah ada'
+        let message = error?.response?.data?.data;
+        if (message && message.includes('Duplicate')) {
+          message = 'Data rumah sudah ada';
+        } else {
+          message = error.message;
         }
         toast({
           variant: 'destructive',
@@ -109,7 +111,7 @@ const HouseForm = ({ title }) => {
       );
       form.trigger();
     } catch (error) {
-      // console.clear();
+      console.clear();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, id]);
